@@ -4,7 +4,11 @@ import torch
 import torch.backends.cudnn as cudnn
 from core import distributed_utils as dist
 from torch.utils.data import DataLoader
-from pavi import SummaryWriter
+# from pavi import SummaryWriter
+try:
+    from tensorboardX import SummaryWriter
+except ImportError:
+    from torch.utils.tensorboard import SummaryWriter
 from easydict import EasyDict as edict
 import numpy as np
 import random

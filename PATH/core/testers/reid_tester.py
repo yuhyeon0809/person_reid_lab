@@ -23,7 +23,7 @@ from core.distributed_utils import (DistModule,
                                     vgather, vreduce)
 from core.utils import (AverageMeter, AverageMinMaxMeter, IterLRScheduler, accuracy,
                         count_parameters_num, create_logger, load_state,
-                        save_state, change_tensor_half, sync_print)
+                        save_state, sync_print) # remove change_tensor_half
 import core.fp16 as fp16
 
 from easydict import EasyDict as edict

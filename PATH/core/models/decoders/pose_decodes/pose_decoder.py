@@ -7,12 +7,15 @@ import cv2
 import math
 from torch.nn.parameter import Parameter
 
-try:
-    import spring.linklink as link
-    from spring.linklink.nn import SyncBatchNorm2d
-except:
-    import linklink as link
-    from linklink.nn import SyncBatchNorm2d
+# try:
+#     import spring.linklink as link
+#     from spring.linklink.nn import SyncBatchNorm2d
+# except:
+#     import linklink as link
+#     from linklink.nn import SyncBatchNorm2d
+
+import torch.distributed as dist
+from torch.nn.modules.batchnorm import SyncBatchNorm as SyncBatchNorm2d
 
 from core.data.transforms.post_transforms import flip_back, pose_pck_accuracy, transform_preds
 
@@ -764,8 +767,9 @@ class TopDownSimpleHead(nn.Module):
             if self.layer_norm:
                 layers.append(LayerNorm(planes, data_format="channels_first"))
             elif self.use_sync_bn:
-                layers.append(SyncBatchNorm2d(num_features=planes, group=self.bn_group, sync_stats=False))
+                # layers.append(SyncBatchNorm2d(num_features=planes, group=self.bn_group, sync_stats=False))
                 # layers.append(self.BN(planes))
+                layers.append(SyncBatchNorm2d(planes))
             else:
                 layers.append(nn.BatchNorm2d(planes))
             layers.append(nn.ReLU(inplace=True))

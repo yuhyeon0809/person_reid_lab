@@ -37,7 +37,14 @@ loader.add_implicit_resolver(
 
 def main():
     args = parser.parse_args()
-    dist_init()
+    # dist_init()
+    os.environ['MASTER_ADDR'] = 'localhost'
+    os.environ['MASTER_PORT'] = '12355'
+    os.environ['WORLD_SIZE'] = '1'
+    os.environ['RANK'] = '0'
+    import torch.distributed as dist
+    if not dist.is_initialized():
+        dist.init_process_group(backend='nccl', init_method='env://')
 
     # auto resume strategy for spring.submit arun
     if args.auto_resume is not None:

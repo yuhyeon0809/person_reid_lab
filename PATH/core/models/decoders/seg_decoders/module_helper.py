@@ -11,13 +11,15 @@ try:
 except ImportError:
     from urllib.request import urlretrieve
 
-try:
-    import spring.linklink as link
-    from spring.linklink.nn import SyncBatchNorm2d
-except:
-    import linklink as link
-    from linklink.nn import SyncBatchNorm2d
+# try:
+#     import spring.linklink as link
+#     from spring.linklink.nn import SyncBatchNorm2d
+# except:
+#     import linklink as link
+#     from linklink.nn import SyncBatchNorm2d
 
+import torch.distributed as dist
+from torch.nn.modules.batchnorm import SyncBatchNorm as SyncBatchNorm2d
 
 class LayerNorm(nn.Module):
     r""" LayerNorm that supports two data formats: channels_last (default) or channels_first. 

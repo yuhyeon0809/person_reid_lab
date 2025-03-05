@@ -29,7 +29,22 @@ except:
 
 from .seg_tester_dev import DatasetEvaluator
 
-from petrelbox.io import PetrelHelper
+# from petrelbox.io import PetrelHelper
+import os
+import io
+
+class LocalFileHelper:
+    
+    @staticmethod
+    def get(file_path):
+        with open(file_path, 'rb') as f:
+            return f.read()
+            
+    @staticmethod
+    def exists(file_path):
+        return os.path.exists(file_path)
+
+PetrelHelper = LocalFileHelper
 
 PERSON_CLASSES = ['background', 'person']
 
