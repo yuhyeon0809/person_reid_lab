@@ -5,10 +5,26 @@ from easydict import EasyDict as edict
 import numpy as np
 import torch.utils.data as data
 from PIL import Image
-from petrelbox.io import PetrelHelper
 from core.data.transforms.pedattr_transforms import PedAttrAugmentation, PedAttrTestAugmentation, PedAttrRandomAugmentation
 
 __all__ = ['AttrDataset', 'MultiAttrDataset']
+
+
+import os
+import io
+
+class LocalFileHelper:
+    
+    @staticmethod
+    def get(file_path):
+        with open(file_path, 'rb') as f:
+            return f.read()
+            
+    @staticmethod
+    def exists(file_path):
+        return os.path.exists(file_path)
+
+PetrelHelper = LocalFileHelper
 
 def merge_pedattr_datasets(data_path_list, root_path_list, dataset_name_list, train, data_use_ratio):
     total_img_id = []

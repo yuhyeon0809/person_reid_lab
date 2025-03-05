@@ -1,0 +1,18 @@
+common:
+  test_batch_size: 128
+  num_workers: 8
+
+tasks:
+  0: 
+    name: "reid_test"
+    type: "test"
+    gres_ratio: 1
+    
+    dataset: 
+      type: "market1501"  
+      test_only: true
+    
+    evaluation:
+      type: "rank1_mAP"
+      rerank: false
+      vis: false  

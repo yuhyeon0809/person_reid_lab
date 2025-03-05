@@ -18,7 +18,23 @@ from typing import *
 
 from core import distributed_utils as dist
 
-from petrelbox.io import PetrelHelper
+# from petrelbox.io import PetrelHelper
+import os
+import io
+
+class LocalFileHelper:
+    
+    @staticmethod
+    def get(file_path):
+        with open(file_path, 'rb') as f:
+            return f.read()
+            
+    @staticmethod
+    def exists(file_path):
+        return os.path.exists(file_path)
+
+PetrelHelper = LocalFileHelper
+
 from pycocotools.coco import COCO
 
 from collections import defaultdict

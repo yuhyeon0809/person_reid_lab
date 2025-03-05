@@ -11,8 +11,22 @@ from core.data.transforms.post_transforms import (affine_transform, fliplr_joint
                                                   get_affine_transform, get_warp_matrix,
                                                   warp_affine_joints)
 
-from petrelbox.io import PetrelHelper
+# from petrelbox.io import PetrelHelper
+import os
+import io
 
+class LocalFileHelper:
+    
+    @staticmethod
+    def get(file_path):
+        with open(file_path, 'rb') as f:
+            return f.read()
+            
+    @staticmethod
+    def exists(file_path):
+        return os.path.exists(file_path)
+
+PetrelHelper = LocalFileHelper
 
 def assert_tensor_type(func):
 

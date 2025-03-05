@@ -22,8 +22,23 @@ from xtcocotools.cocoeval import COCOeval
 
 from core.utils import sync_print
 
-from petrelbox.io import PetrelHelper
+# from petrelbox.io import PetrelHelper
 
+import os
+import io
+
+class LocalFileHelper:
+    
+    @staticmethod
+    def get(file_path):
+        with open(file_path, 'rb') as f:
+            return f.read()
+            
+    @staticmethod
+    def exists(file_path):
+        return os.path.exists(file_path)
+
+PetrelHelper = LocalFileHelper
 
 class PetrelCOCO(COCO):
     def __init__(self, annotation_file=None, test_index=None, ann_data=None):

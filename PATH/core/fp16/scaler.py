@@ -1,5 +1,5 @@
 import torch
-from torch._six import inf
+from torch import inf
 
 from .utils import iter_params
 
