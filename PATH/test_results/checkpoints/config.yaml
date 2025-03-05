@@ -1,0 +1,37 @@
+common:
+  backbone: "resnet50" 
+  neck: "bnneck"        
+  decoder: "reid_head" 
+
+  dataset: "market1501" 
+  optimizer: 
+    type: "Adam"
+    lr: 0.0003
+    weight_decay: 0.0005
+  
+  # 학습 스케줄링
+  lr_scheduler:
+    type: "MultiStepLR"
+    milestones: [40, 70]
+    gamma: 0.1
+  
+  share_backbone_group: [0]  
+  share_neck_group: [0]      
+  share_decoder_group: [0]    
+
+task_common:
+  batch_size: 64
+  num_workers: 8
+
+tasks:
+  0: 
+    name: "reid"
+    type: "normal"
+    loss_weight: 1.0
+    gres_ratio: 1   
+    random_seed: 42
+    
+    dataset: "market1501"   
+    evaluation:
+      type: "rank1_mAP"
+      rerank: false
