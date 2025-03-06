@@ -20,14 +20,14 @@ tasks:
     dataset: 
       type: "market1501"
       test_only: true
-      kwargs:  # 추가해야 하는 부분
-        data_path: "/path/to/your/market1501/dataset"  # 실제 데이터셋 경로
-        img_size: [256, 128]  # 이미지 크기 [height, width]
-        batch_size: 128  # 배치 크기
-        num_instances: 4  # 각 ID당 이미지 수 (ReID에서 중요)
+      kwargs:  
+        data_path: "/path/to/your/market1501/dataset"  
+        img_size: [256, 128]  # [height, width]
+        batch_size: 128  
+        num_instances: 4  # num of images per ID 
         transforms:
-          norm_mean: [0.485, 0.456, 0.406]  # 정규화 평균
-          norm_std: [0.229, 0.224, 0.225]  # 정규화 표준편차
+          norm_mean: [0.485, 0.456, 0.406] 
+          norm_std: [0.229, 0.224, 0.225] 
     
     evaluation:
       type: "rank1_mAP"
