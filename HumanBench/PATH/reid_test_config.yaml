@@ -1,0 +1,104 @@
+common:
+  test_batch_size: 128
+  num_workers: 8
+  max_iter: 125
+  print_freq: 1
+
+  tester: 
+    type: "ReIDTester"
+    model_path: "/home/youhyun/Volume/research/reid_lab/person_reid_lab/HumanBench/PATH/asset/weights/PATH-ViT-B.pth"
+    save_dir: "/home/youhyun/Volume/research/reid_lab/person_reid_lab/HumanBench/PATH/reid_test_results"
+    device: "cuda"
+    vis: false
+    test_feature_name: "feature"
+
+tasks:
+  0: 
+    name: "reid_test"
+    type: "test"
+    gres_ratio: 1
+    loss_weight: 1.0
+    workers: 8
+    
+    backbone:
+      type: "vit_base_patch16_ladder_attention_share_pos_embed"
+      kwargs:
+        img_size: [256, 128]
+        patch_size: 16
+        embed_dim: 768  # 1024 -> 768
+        depth: 12  # 24 -> 12
+        num_heads: 12  # 16 -> 12
+        mlp_ratio: 4.0
+        qkv_bias: true
+        drop_path_rate: 0.1
+        use_abs_pos_emb: true
+        window: false
+        interval: 3
+        pretrained: false
+        # pretrained_path: "reid_lab/HumanBench/PATH/mae_pretrain_vit_base.pth"
+        rel_pos_spatial: false
+        learnable_pos: false
+        test_pos_mode: "learnable_simple_interpolate"
+        use_cls_token: True
+    
+    neck:
+      type: "LadderSideAttentionFPN"
+      kwargs:
+        layer_feat_nums: 12  # ViT-B depth
+        hidden_dim: 768  # backbone embed_dim
+        reduct_ration: 16  # from paper
+        transformer_block_nums: 1  # additional transformer blocks
+        transformer_block_num_heads: 2  # heads of transformer blocks
+        gate_T: 0.1  
+        gate_alpha: 0  # gate init value
+        use_cls_token: true # ture for reid task  
+        # reduct_after_use_attention: "SENet"  # attention module type
+        # lms_checkpoint_train: null  
+      # type: DoNothing
+      # kwargs: {}
+    
+    decoder:
+      type: "reid_cls_vit_B"
+      kwargs:
+        out_feature: 768  # output feature dim
+        loss_cfg:
+          type: "Softmax_TripletLoss"
+          kwargs:
+            in_features: 768  
+            out_features: 1501  # Market-1501 ID 
+            tri_margin: 0.3  # margin of tripletloss
+            balance_weight: 1.0  # balancing softmax-triplet
+        feature_bn: true  
+        use_sync_bn: false  
+        bn_group: null  
+        bn_momentum: 0.1  
+        bn_eps: 1.0e-5  
+        feature_only: true  
+
+    model_entry_type: "model_entry"
+    
+    dataset: 
+      type: "ReIDTestDataset"
+      test_only: true
+      kwargs:  
+        data_path: "/home/youhyun/Volume/research/reid_lab/person_reid_lab/HumanBench/PATH/datasets/market1501/Market-1501/"  
+        query_file_path: "/home/youhyun/Volume/research/reid_lab/person_reid_lab/HumanBench/PATH/datasets/market1501/data_list/query_list.txt"
+        gallery_file_path: "/home/youhyun/Volume/research/reid_lab/person_reid_lab/HumanBench/PATH/datasets/market1501/data_list/gallery_list.txt"
+        augmentation:  
+          height: 256
+          width: 128
+        img_size: [256, 128]  # [height, width]
+        batch_size: 128  
+        num_instances: 4  # num of images per ID 
+        transforms:
+          norm_mean: [0.485, 0.456, 0.406] 
+          norm_std: [0.229, 0.224, 0.225] 
+    
+    evaluation:
+      type: "rank1_mAP"
+      rerank: false
+      vis: false  
+    
+    # using create_dataloader()
+    sampler:
+      batch_size: 128 
